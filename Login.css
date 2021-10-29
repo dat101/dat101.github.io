@@ -166,3 +166,13 @@ border-color: #2691d9;
 .signup a:hover{
   text-decoration: underline;
 }
+
+.return a{
+  color: #3498db;
+  text-decoration: none;
+  padding: 2px;
+}
+
+.return{
+  padding: 20px;
+}
