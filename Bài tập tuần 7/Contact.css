@@ -71,5 +71,14 @@ textarea.contact-form-text{
 }
 
 .back{
-  float: left;
+   border: 0;
+  background: #34495e;
+  color: #fff;
+  padding: 12px 50px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.5s;
+  position: relative;
+  left: 190px;
+  bottom: 40px
 }
