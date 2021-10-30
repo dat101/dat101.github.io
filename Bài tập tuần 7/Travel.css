@@ -41,6 +41,8 @@ ul li a:hover {
   float: left;
   width: 150px;
   height: auto;
+  position: relative;
+  right: 85px;
 }
 
 ul li.active a{
