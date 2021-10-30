@@ -8,7 +8,7 @@
   background: url(https://wallpaperaccess.com/full/83937.jpg) ;
   background-size: cover;
   padding: 40px 0;
-  height: 100vh
+  height: 100vh;
   overflow: hidden;
 }
 
@@ -79,6 +79,6 @@ textarea.contact-form-text{
   cursor: pointer;
   transition: 0.5s;
   position: relative;
-  left: 250px;
+  left: 375px;
   bottom: 39px
 }
