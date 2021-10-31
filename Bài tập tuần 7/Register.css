@@ -23,6 +23,7 @@ body{
   width: 400px;
   background: white;
   padding: 60px 40px;
+  max-height: 750px;
 }
 
 header{
