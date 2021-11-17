@@ -9,16 +9,21 @@
   font-family: 'Lobster', cursive;
 }
 
+.navbar-brand:hover{
+  color: cyan;
+}
+
 .nav-link{
   margin-right: 10px;
   margin-left: 10px;
   text-transform: uppercase;
   font-family: 'Rubik', sans-serif;
-  font-size: 2rem;
+  color: black;
 }
 
 .nav-link:hover{
   text-decoration: underline;
+  color: black;
 }
 
 .search{
@@ -231,5 +236,5 @@ footer a{
 }
 
 .cat p{
-  font-size: 30px;
+  font-size: 50px;
 }
