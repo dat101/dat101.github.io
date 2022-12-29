@@ -18,6 +18,13 @@
       <script>
         Push.Permission.request();
         // Get the push form.
+          window.OneSignal = window.OneSignal || [];
+    OneSignal.push(function () {
+        OneSignal.init({
+            appId: "c5d7cfcf-ba39-444c-9612-49754feaa872",
+        });
+    });
+          
         var pushForm = document.getElementById('push-form');
       
         // Add a submit event listener to the form.
