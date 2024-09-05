@@ -1,6 +1,4 @@
-    function isMobile() {
-    return window.innerWidth <= 768; // Thay đổi giá trị này nếu cần
-}
+
 
 if (isMobile()) {
     document.querySelectorAll('.dropdown-location').forEach(content => {
