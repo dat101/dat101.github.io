@@ -2,7 +2,7 @@
 <html>
 <body>
 <div class="outer-container">
-<div class="dropdown-container" id="scrollable">
+<div class="dropdown-container scrollable">
 <div class="dropdown-location">
     <img src="https://photographer.vn/wp-content/uploads/2019/07/5.3.jpg" alt="">
      <div class="image-caption">Coffee</div>
@@ -93,12 +93,13 @@ if (isMobile()) {
         });
     });
 
-    const scrollable = document.getElementById("scrollable");
-
-    scrollable.addEventListener('scroll', () => {
-        document.querySelectorAll('.dropdown-location').forEach(content => {
-            const dropdown = content.querySelector('.dropdown-content-location');
-            adjustDropdownPosition(content, dropdown);
+    // Thay vì sử dụng document.getElementById("scrollable"), ta dùng class
+    document.querySelectorAll('.scrollable').forEach(scrollable => {
+        scrollable.addEventListener('scroll', () => {
+            document.querySelectorAll('.dropdown-location').forEach(content => {
+                const dropdown = content.querySelector('.dropdown-content-location');
+                adjustDropdownPosition(content, dropdown);
+            });
         });
     });
 
