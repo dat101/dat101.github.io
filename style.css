@@ -59,7 +59,7 @@
 
 .dropdown-location img {
     width: 60px;
-    height: 60px;
+    height: 60px !important;
     padding: 3px;
     cursor: pointer;
     border-radius: 50%;
