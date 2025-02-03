@@ -32,7 +32,6 @@
     display: none;
     position: fixed; /* Đặt cố định thay vì tuyệt đối */
     top: 40%;
-    left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
     min-width: 200px;
