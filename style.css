@@ -35,9 +35,9 @@
     left: 70%;
     transform: translate(-50%, -50%);
     background-color: white;
-    min-width: 200px;
-    max-width: 600px;
-    max-height: 200px;
+    max-width: 90vw; /* Giữ cho dropdown không quá rộng */
+    width: auto; /* Tự điều chỉnh chiều rộng */
+    max-height: 80vh;
     overflow-y: auto;
     z-index: 1000;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
