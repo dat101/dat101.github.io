@@ -35,7 +35,7 @@
     transform: translate(-50%, -50%);
     background-color: white;
     min-width: 200px;
-    max-width: 90vw; /* Giới hạn tối đa 90% màn hình */
+    max-width: 600px;
     max-height: 80vh;
     overflow-y: auto;
     z-index: 1000;
