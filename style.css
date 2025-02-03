@@ -32,7 +32,7 @@
     display: none;
     position: fixed; /* Đặt cố định thay vì tuyệt đối */
     top: 40%;
-    left: 70%;
+    left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
     max-width: 90vw; /* Giữ cho dropdown không quá rộng */
