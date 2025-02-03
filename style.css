@@ -35,8 +35,8 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
-    max-width: 90vw; /* Giữ cho dropdown không quá rộng */
-    width: auto; /* Tự điều chỉnh chiều rộng */
+    min-width: 200px;
+    max-width: 90vw; /* Giới hạn tối đa 90% màn hình */
     max-height: 80vh;
     overflow-y: auto;
     z-index: 1000;
