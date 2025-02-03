@@ -31,7 +31,7 @@
 .dropdown-content-location {
     display: none;
     position: fixed; /* Đặt cố định thay vì tuyệt đối */
-    top: 35%;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
