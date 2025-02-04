@@ -133,4 +133,8 @@
      width: 30px;
      height: 30px !important;
     }
+
+    .dropdown-container {
+        white-space: nowrap; 
+    }
 }
