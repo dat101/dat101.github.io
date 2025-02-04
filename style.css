@@ -26,7 +26,6 @@
 .dropdown-content-location {
     display: none;
     position: absolute; /* Đặt cố định thay vì tuyệt đối */
-    right: 0;
     background-color: white;
     min-width: 200px;
     max-width: 600px;
