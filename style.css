@@ -23,11 +23,6 @@
     margin: 0 8px 8px;
 }
 
-.dropdown-location:focus-within .dropdown-content-location {
-    display: block;
-    opacity: 1;
-}
-
 .dropdown-content-location {
     display: none;
     position: fixed; /* Đặt cố định thay vì tuyệt đối */
