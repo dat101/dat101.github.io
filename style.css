@@ -117,9 +117,14 @@
 }
 
 @media (max-width: 1024px) {
-.dropdown-content-location a {
-    font-size: 10px;
-}
+    .dropdown-content-location a {
+       font-size: 10px;
+    }
+	
+    .dropdown-content-location a img {
+     width: 30px;
+     height: 30px !important;
+    }
 
     .dropdown-container {
         white-space: nowrap; 
