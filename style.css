@@ -124,6 +124,7 @@
 
     .dropdown-content-location {    
       min-width: 150px;
+      white-space: normal;
       max-width: 350px;
       max-height: 150px;
       padding: 5px;
