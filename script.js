@@ -10,12 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Kiểm tra nếu tràn bên trái hoặc có giá trị left > 0
                 if (rect.left < 0 || parseInt(dropdownContent.style.left) > 0) {
-                    dropdownContent.style.left = "0";
+                    dropdownContent.style.left = "auto";
                     dropdownContent.style.right = "0";
                 } 
                 // Kiểm tra nếu tràn bên phải
                 else if (rect.right > window.innerWidth) {
-                    dropdownContent.style.left = "0";
+                    dropdownContent.style.left = "auto";
                     dropdownContent.style.right = "0";
                 } 
                 else {
