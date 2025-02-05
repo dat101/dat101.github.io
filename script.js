@@ -1,42 +1,66 @@
-function adjustDropdownPosition(content, dropdown) {
-    const contentRect = content.getBoundingClientRect();
-    const dropdownRect = dropdown.getBoundingClientRect();
-    
-    let dropdownLeft = contentRect.left; // Vị trí mặc định
+document.addEventListener("DOMContentLoaded", function () {
+    const dropdowns = document.querySelectorAll(".dropdown-location");
 
-    // Nếu dropdown bị tràn ra bên phải, dịch chuyển sang trái
-    if (dropdownLeft + dropdownRect.width > window.innerWidth) {
-        dropdownLeft = contentRect.right - dropdownRect.width;
-    }
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener("mouseenter", function () {
+            const dropdownContent = this.querySelector(".dropdown-content-location");
 
-    // Nếu dropdown bị tràn ra bên trái, giữ nó trong viewport
-    if (dropdownLeft < 0) {
-        dropdownLeft = 0;
-    }
+            if (dropdownContent) {
+                // Lấy tọa độ của dropdown-content
+                const rect = dropdownContent.getBoundingClientRect();
 
-    dropdown.style.left = dropdownLeft + 'px';
-}
-
-// Áp dụng sự kiện cho tất cả dropdown-location
-document.querySelectorAll('.dropdown-location').forEach(content => {
-    const dropdown = content.querySelector('.dropdown-content-location');
-
-    content.addEventListener('mouseenter', () => {
-        adjustDropdownPosition(content, dropdown);
-        dropdown.style.display = 'block';
-    });
-
-    content.addEventListener('mouseleave', () => {
-        dropdown.style.display = 'none';
-    });
-});
-
-// Xử lý khi scroll (tránh lỗi dropdown không cập nhật vị trí)
-document.querySelectorAll('.scrollable').forEach(scrollable => {
-    scrollable.addEventListener('scroll', () => {
-        document.querySelectorAll('.dropdown-location').forEach(content => {
-            const dropdown = content.querySelector('.dropdown-content-location');
-            adjustDropdownPosition(content, dropdown);
+                // Nếu bị tràn ra ngoài bên trái
+                if (rect.left < 0) {
+                    dropdownContent.style.left = "auto";
+                    dropdownContent.style.right = "0";
+                } else {
+                    dropdownContent.style.left = "";
+                    dropdownContent.style.right = "";
+                }
+            }
         });
     });
 });
+
+function isMobile() {
+    return window.innerWidth <= 1024; // Thay đổi giá trị này nếu cần
+}
+
+if (isMobile()) {
+    document.querySelectorAll('.dropdown-location').forEach(content => {
+        const dropdown = content.querySelector('.dropdown-content-location');
+
+        content.addEventListener('mouseenter', () => {
+            adjustDropdownPosition(content, dropdown);
+        });
+    });
+
+    // Thay vì sử dụng document.getElementById("scrollable"), ta dùng class
+    document.querySelectorAll('.scrollable').forEach(scrollable => {
+        scrollable.addEventListener('scroll', () => {
+            document.querySelectorAll('.dropdown-location').forEach(content => {
+                const dropdown = content.querySelector('.dropdown-content-location');
+                adjustDropdownPosition(content, dropdown);
+            });
+        });
+    });
+
+    function adjustDropdownPosition(content, dropdown) {
+        const contentRect = content.getBoundingClientRect();
+        const dropdownRect = dropdown.getBoundingClientRect();
+
+        let dropdownLeft = contentRect.left - 20;
+        
+        // Điều chỉnh nếu dropdown bị ra ngoài viewport bên phải
+        if (dropdownLeft + dropdownRect.width > window.innerWidth) {
+            dropdownLeft = window.innerWidth - dropdownRect.width - 40;
+        }
+
+        // Điều chỉnh nếu dropdown bị ra ngoài viewport bên trái
+        if (dropdownLeft < 0) {
+            dropdownLeft = 0;
+        }
+
+        dropdown.style.left = dropdownLeft + 'px';
+    }
+}
