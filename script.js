@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (dropdownContent) {
                 const rect = dropdownContent.getBoundingClientRect();
 
-                // Kiểm tra nếu tràn bên trái
-                if (rect.left < 0) {
+                // Kiểm tra nếu tràn bên trái hoặc có giá trị left > 0
+                if (rect.left < 0 || parseInt(dropdownContent.style.left) > 0) {
                     dropdownContent.style.left = "0";
                     dropdownContent.style.right = "0";
                 } 
@@ -72,7 +72,8 @@ if (isMobile()) {
             dropdownLeft = window.innerWidth - dropdownRect.width - 40;
         }
 
-        if (dropdownLeft < 0) {
+        // Ép giá trị left về 0 nếu lớn hơn 0
+        if (dropdownLeft < 0 || dropdownLeft > 0) {
             dropdownLeft = 0;
         }
 
