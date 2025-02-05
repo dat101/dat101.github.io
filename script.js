@@ -5,25 +5,22 @@ document.addEventListener("DOMContentLoaded", function () {
         dropdown.addEventListener("mouseenter", function () {
             const dropdownContent = this.querySelector(".dropdown-content-location");
 
-            if (dropdownContent && window.innerWidth > 1024) { // Chỉ áp dụng khi màn hình lớn hơn 1024px
+            if (dropdownContent) {
                 const rect = dropdownContent.getBoundingClientRect();
 
-                // Nếu dropdown có chiều rộng dưới 400px thì căn phải
-                if (rect.width < 200) {
+                // Kiểm tra nếu tràn bên trái
+                if (rect.left < 0) {
                     dropdownContent.style.left = "auto";
                     dropdownContent.style.right = "0";
-                } else {
-                    // Xử lý khi tràn màn hình
-                    if (rect.left < 0) {
-                        dropdownContent.style.left = "auto";
-                        dropdownContent.style.right = "0";
-                    } else if (rect.right > window.innerWidth) {
-                        dropdownContent.style.left = "auto";
-                        dropdownContent.style.right = "0";
-                    } else {
-                        dropdownContent.style.left = "";
-                        dropdownContent.style.right = "";
-                    }
+                } 
+                // Kiểm tra nếu tràn bên phải
+                else if (rect.right > window.innerWidth) {
+                    dropdownContent.style.left = "auto";
+                    dropdownContent.style.right = "0";
+                } 
+                else {
+                    dropdownContent.style.left = "";
+                    dropdownContent.style.right = "";
                 }
             }
         });
@@ -31,40 +28,50 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function isMobile() {
-    return window.innerWidth <= 1024; // Thay đổi giá trị này nếu cần
+    return window.innerWidth <= 1024; 
 }
 
 if (isMobile()) {
     document.querySelectorAll('.dropdown-location').forEach(content => {
         const dropdown = content.querySelector('.dropdown-content-location');
-
-        content.addEventListener('mouseenter', () => {
-            adjustDropdownPosition(content, dropdown);
-        });
-    });
-
-    // Thay vì sử dụng document.getElementById("scrollable"), ta dùng class
-    document.querySelectorAll('.scrollable').forEach(scrollable => {
-        scrollable.addEventListener('scroll', () => {
-            document.querySelectorAll('.dropdown-location').forEach(content => {
-                const dropdown = content.querySelector('.dropdown-content-location');
+        if (dropdown) {
+            content.addEventListener('mouseenter', () => {
                 adjustDropdownPosition(content, dropdown);
             });
+        }
+    });
+
+    document.querySelectorAll('.scrollable').forEach(scrollable => {
+        let ticking = false;
+
+        scrollable.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    document.querySelectorAll('.dropdown-location').forEach(content => {
+                        const dropdown = content.querySelector('.dropdown-content-location');
+                        if (dropdown) {
+                            adjustDropdownPosition(content, dropdown);
+                        }
+                    });
+                    ticking = false;
+                });
+                ticking = true;
+            }
         });
     });
 
     function adjustDropdownPosition(content, dropdown) {
+        if (!dropdown) return;
+
         const contentRect = content.getBoundingClientRect();
         const dropdownRect = dropdown.getBoundingClientRect();
 
         let dropdownLeft = contentRect.left - 20;
-        
-        // Điều chỉnh nếu dropdown bị ra ngoài viewport bên phải
+
         if (dropdownLeft + dropdownRect.width > window.innerWidth) {
             dropdownLeft = window.innerWidth - dropdownRect.width - 40;
         }
 
-        // Điều chỉnh nếu dropdown bị ra ngoài viewport bên trái
         if (dropdownLeft < 0) {
             dropdownLeft = 0;
         }
