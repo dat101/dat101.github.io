@@ -62,8 +62,8 @@
 }
 
 .dropdown-location img {
-    width: 50px;
-    height: 50px !important;
+    width: 60px;
+    height: 60px !important;
     padding: 3px;
     cursor: pointer;
     border-radius: 50%;
@@ -80,8 +80,8 @@
 
 .dropdown-content-location a img {
     margin-right: 25px;
-    width: 70px;
-    height: 70px !important;
+    width: 60px;
+    height: 60px !important;
     border: none;
 }
 
