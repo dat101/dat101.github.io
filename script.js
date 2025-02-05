@@ -30,30 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    const dropdowns = document.querySelectorAll(".dropdown-location");
-
-    dropdowns.forEach(dropdown => {
-        dropdown.addEventListener("mouseenter", function () {
-            const dropdownContent = this.querySelector(".dropdown-content-location");
-
-            if (dropdownContent) {
-                // Lấy tọa độ của dropdown-content
-                const rect = dropdownContent.getBoundingClientRect();
-
-                // Nếu bị tràn ra ngoài bên trái
-                if (rect.left < 0) {
-                    dropdownContent.style.left = "auto";
-                    dropdownContent.style.right = "0";
-                } else {
-                    dropdownContent.style.left = "";
-                    dropdownContent.style.right = "";
-                }
-            }
-        });
-    });
-});
-
 function isMobile() {
     return window.innerWidth <= 1024; // Thay đổi giá trị này nếu cần
 }
