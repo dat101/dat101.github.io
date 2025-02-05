@@ -5,6 +5,38 @@ document.addEventListener("DOMContentLoaded", function () {
         dropdown.addEventListener("mouseenter", function () {
             const dropdownContent = this.querySelector(".dropdown-content-location");
 
+            if (dropdownContent && window.innerWidth > 1024) { // Chỉ áp dụng khi màn hình lớn hơn 1024px
+                const rect = dropdownContent.getBoundingClientRect();
+
+                // Nếu dropdown có chiều rộng dưới 400px thì căn phải
+                if (rect.width < 400) {
+                    dropdownContent.style.left = "auto";
+                    dropdownContent.style.right = "0";
+                } else {
+                    // Xử lý khi tràn màn hình
+                    if (rect.left < 0) {
+                        dropdownContent.style.left = "auto";
+                        dropdownContent.style.right = "0";
+                    } else if (rect.right > window.innerWidth) {
+                        dropdownContent.style.left = "auto";
+                        dropdownContent.style.right = "0";
+                    } else {
+                        dropdownContent.style.left = "";
+                        dropdownContent.style.right = "";
+                    }
+                }
+            }
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const dropdowns = document.querySelectorAll(".dropdown-location");
+
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener("mouseenter", function () {
+            const dropdownContent = this.querySelector(".dropdown-content-location");
+
             if (dropdownContent) {
                 // Lấy tọa độ của dropdown-content
                 const rect = dropdownContent.getBoundingClientRect();
