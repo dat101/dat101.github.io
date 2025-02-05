@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const rect = dropdownContent.getBoundingClientRect();
 
                 // Nếu dropdown có chiều rộng dưới 400px thì căn phải
-                if (rect.width < 400) {
+                if (rect.width < 200) {
                     dropdownContent.style.left = "auto";
                     dropdownContent.style.right = "0";
                 } else {
