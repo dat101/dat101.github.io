@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function isMobile() {
-    return window.innerWidth <= 1024; 
+    return window.innerWidth <= 768; 
 }
 
 if (isMobile()) {
