@@ -38,7 +38,7 @@
     border-radius: 10px;
 }
 
-.dropdown-content-location .last { 
+.last.dropdown-content-location { 
     right: 0;
 }
 
