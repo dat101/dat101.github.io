@@ -38,6 +38,10 @@
     border-radius: 10px;
 }
 
+.dropdown-content-location .last { 
+    right: 0;
+}
+
 .dropdown-location:hover .dropdown-content-location {
     display: block;
     opacity: 1;
