@@ -117,20 +117,6 @@
     background: #f0f0f0; /* Màu góc nếu scrollbar nằm trong container vuông */
 }
 
-.dropdown-up {
-    bottom: 100%;
-    top: auto !important;
-    max-height: 80vh;
-    overflow-y: auto;
-}
-
-.dropdown-down {
-    top: 100%;
-    bottom: auto !important;
-    max-height: 80vh;
-    overflow-y: auto;
-}
-
 @media (max-width: 768px) {
     .dropdown-content-location a {
        font-size: 17px;
