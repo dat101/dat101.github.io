@@ -6,77 +6,84 @@ document.addEventListener("DOMContentLoaded", function () {
             const dropdownContent = this.querySelector(".dropdown-content-location");
 
             if (dropdownContent) {
-                const rect = dropdownContent.getBoundingClientRect();
+                // Reset vị trí để tính toán đúng
+                dropdownContent.style.top = "";
+                dropdownContent.style.bottom = "";
+                dropdownContent.style.left = "";
+                dropdownContent.style.right = "";
 
-                // Kiểm tra nếu tràn bên trái hoặc có giá trị left > 0
-                if (rect.left < 0 || parseInt(dropdownContent.style.left) > 0) {
+                const rect = dropdownContent.getBoundingClientRect();
+                const spaceBelow = window.innerHeight - rect.bottom;
+                const spaceAbove = rect.top;
+
+                // Căn trái/phải nếu tràn
+                if (rect.left < 0) {
+                    dropdownContent.style.left = "0";
+                    dropdownContent.style.right = "auto";
+                } else if (rect.right > window.innerWidth) {
                     dropdownContent.style.left = "auto";
                     dropdownContent.style.right = "0";
-                } 
-                // Kiểm tra nếu tràn bên phải
-                else if (rect.right > window.innerWidth) {
-                    dropdownContent.style.left = "auto";
-                    dropdownContent.style.right = "0";
-                } 
-                else {
-                    dropdownContent.style.left = "";
-                    dropdownContent.style.right = "";
+                }
+
+                // Căn trên nếu không đủ không gian dưới
+                if (spaceBelow < dropdownContent.offsetHeight && spaceAbove > dropdownContent.offsetHeight) {
+                    dropdownContent.style.top = "auto";
+                    dropdownContent.style.bottom = "100%";
+                } else {
+                    dropdownContent.style.top = "100%";
+                    dropdownContent.style.bottom = "auto";
                 }
             }
         });
     });
-});
 
-function isMobile() {
-    return window.innerWidth <= 768; 
-}
-
-if (isMobile()) {
-    document.querySelectorAll('.dropdown-location').forEach(content => {
-        const dropdown = content.querySelector('.dropdown-content-location');
-        if (dropdown) {
-            content.addEventListener('mouseenter', () => {
-                adjustDropdownPosition(content, dropdown);
-            });
-        }
-    });
-
-    document.querySelectorAll('.scrollable').forEach(scrollable => {
-        let ticking = false;
-
-        scrollable.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    document.querySelectorAll('.dropdown-location').forEach(content => {
-                        const dropdown = content.querySelector('.dropdown-content-location');
-                        if (dropdown) {
-                            adjustDropdownPosition(content, dropdown);
-                        }
-                    });
-                    ticking = false;
+    // Xử lý riêng cho mobile
+    if (window.innerWidth <= 768) {
+        document.querySelectorAll('.dropdown-location').forEach(content => {
+            const dropdown = content.querySelector('.dropdown-content-location');
+            if (dropdown) {
+                content.addEventListener('mouseenter', () => {
+                    adjustDropdownPosition(content, dropdown);
                 });
-                ticking = true;
             }
         });
-    });
 
-    function adjustDropdownPosition(content, dropdown) {
-        if (!dropdown) return;
+        document.querySelectorAll('.scrollable').forEach(scrollable => {
+            let ticking = false;
 
-        const contentRect = content.getBoundingClientRect();
-        const dropdownRect = dropdown.getBoundingClientRect();
+            scrollable.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        document.querySelectorAll('.dropdown-location').forEach(content => {
+                            const dropdown = content.querySelector('.dropdown-content-location');
+                            if (dropdown) {
+                                adjustDropdownPosition(content, dropdown);
+                            }
+                        });
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        });
 
-        let dropdownLeft = contentRect.left - 20;
+        function adjustDropdownPosition(content, dropdown) {
+            if (!dropdown) return;
 
-        if (dropdownLeft + dropdownRect.width > window.innerWidth) {
-            dropdownLeft = window.innerWidth - dropdownRect.width - 40;
+            const contentRect = content.getBoundingClientRect();
+            const dropdownRect = dropdown.getBoundingClientRect();
+
+            let dropdownLeft = contentRect.left - 20;
+
+            if (dropdownLeft + dropdownRect.width > window.innerWidth) {
+                dropdownLeft = window.innerWidth - dropdownRect.width - 40;
+            }
+
+            if (dropdownLeft < 0 || dropdownLeft > 0) {
+                dropdownLeft = 0;
+            }
+
+            dropdown.style.left = dropdownLeft + 'px';
         }
-
-        // Ép giá trị left về 0 nếu lớn hơn 0
-        if (dropdownLeft < 0 || dropdownLeft > 0) {
-            dropdownLeft = 0;
-        }
-
-        dropdown.style.left = dropdownLeft + 'px';
     }
-}
+});
