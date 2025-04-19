@@ -5,9 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
     dropdown.addEventListener("mouseenter", function () {
       const dropdownContent = this.querySelector(".dropdown-content-location");
       if (dropdownContent) {
-        // Xác định xem dropdown nằm trong footer elementor hay không
-        const isInFooter = this.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
-        adjustDropdownPosition(this, dropdownContent, isInFooter);
+        // Xác định xem dropdown nằm trong vùng cần áp dụng drop-up hay không
+        const shouldDropUp = this.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
+        adjustDropdownPosition(this, dropdownContent, shouldDropUp);
       }
     });
   });
@@ -22,12 +22,12 @@ if (isMobile()) {
     const dropdown = content.querySelector('.dropdown-content-location');
     if (dropdown) {
       content.addEventListener('mouseenter', () => {
-        const isInFooter = content.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
-        adjustDropdownPosition(content, dropdown, isInFooter);
+        const shouldDropUp = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
+        adjustDropdownPosition(content, dropdown, shouldDropUp);
       });
     }
   });
-
+  
   document.querySelectorAll('.scrollable').forEach(scrollable => {
     let ticking = false;
     scrollable.addEventListener('scroll', () => {
@@ -36,8 +36,8 @@ if (isMobile()) {
           document.querySelectorAll('.dropdown-location').forEach(content => {
             const dropdown = content.querySelector('.dropdown-content-location');
             if (dropdown) {
-              const isInFooter = content.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
-              adjustDropdownPosition(content, dropdown, isInFooter);
+              const shouldDropUp = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
+              adjustDropdownPosition(content, dropdown, shouldDropUp);
             }
           });
           ticking = false;
@@ -48,7 +48,7 @@ if (isMobile()) {
   });
 }
 
-function adjustDropdownPosition(content, dropdown, isInFooter) {
+function adjustDropdownPosition(content, dropdown, shouldDropUp) {
   if (!dropdown) return;
   
   const contentRect = content.getBoundingClientRect();
@@ -68,12 +68,12 @@ function adjustDropdownPosition(content, dropdown, isInFooter) {
   dropdown.style.left = dropdownLeft + 'px';
   
   // Xử lý theo chiều dọc dựa vào vị trí
-  if (isInFooter) {
-    // Nếu ở footer, luôn hiển thị dropdown hướng lên trên
+  if (shouldDropUp) {
+    // Nếu ở trong khu vực cần drop-up, luôn hiển thị dropdown hướng lên trên
     dropdown.style.top = 'auto';
     dropdown.style.bottom = '100%';
   } else {
-    // Nếu không phải ở footer, kiểm tra không gian phía dưới
+    // Nếu không thuộc khu vực drop-up, kiểm tra không gian phía dưới
     const spaceBelow = viewportHeight - contentRect.bottom;
     const dropdownHeight = dropdownRect.height;
     
@@ -95,8 +95,8 @@ window.addEventListener('resize', function() {
   visibleDropdowns.forEach(dropdown => {
     const parent = dropdown.closest('.dropdown-location');
     if (parent) {
-      const isInFooter = parent.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
-      adjustDropdownPosition(parent, dropdown, isInFooter);
+      const shouldDropUp = parent.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
+      adjustDropdownPosition(parent, dropdown, shouldDropUp);
     }
   });
 });
