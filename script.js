@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
     dropdown.addEventListener("mouseenter", function () {
       const dropdownContent = this.querySelector(".dropdown-content-location");
       if (dropdownContent) {
-        // Xác định xem dropdown nằm trong header hay footer
-        const isInFooter = isElementInFooter(this);
+        // Xác định xem dropdown nằm trong phần tử có id footer_section hay không
+        const isInFooter = isElementInFooterSection(this);
         adjustDropdownPosition(this, dropdownContent, isInFooter);
       }
     });
@@ -17,19 +17,10 @@ function isMobile() {
   return window.innerWidth <= 768;
 }
 
-// Hàm kiểm tra xem phần tử có nằm trong footer hay không
-function isElementInFooter(element) {
-  // Kiểm tra xem phần tử có nằm trong thẻ footer hoặc có class chứa 'footer'
-  const isInFooterTag = element.closest('footer') !== null;
-  const hasFooterClass = element.closest('.footer, [class*="footer"]') !== null;
-  
-  // Phương pháp thay thế: kiểm tra vị trí Y trên trang
-  // Nếu phần tử nằm ở nửa dưới của trang, có thể coi là footer
-  const viewportHeight = window.innerHeight;
-  const rect = element.getBoundingClientRect();
-  const isInLowerHalf = rect.top > viewportHeight / 2;
-  
-  return isInFooterTag || hasFooterClass || isInLowerHalf;
+// Hàm kiểm tra xem phần tử có nằm trong phần tử có id footer_section hay không
+function isElementInFooterSection(element) {
+  // Kiểm tra xem phần tử có nằm trong thẻ có id 'footer_section'
+  return element.closest('#footer_section') !== null;
 }
 
 if (isMobile()) {
@@ -37,7 +28,7 @@ if (isMobile()) {
     const dropdown = content.querySelector('.dropdown-content-location');
     if (dropdown) {
       content.addEventListener('mouseenter', () => {
-        const isInFooter = isElementInFooter(content);
+        const isInFooter = isElementInFooterSection(content);
         adjustDropdownPosition(content, dropdown, isInFooter);
       });
     }
@@ -51,7 +42,7 @@ if (isMobile()) {
           document.querySelectorAll('.dropdown-location').forEach(content => {
             const dropdown = content.querySelector('.dropdown-content-location');
             if (dropdown) {
-              const isInFooter = isElementInFooter(content);
+              const isInFooter = isElementInFooterSection(content);
               adjustDropdownPosition(content, dropdown, isInFooter);
             }
           });
@@ -82,13 +73,13 @@ function adjustDropdownPosition(content, dropdown, isInFooter) {
   }
   dropdown.style.left = dropdownLeft + 'px';
   
-  // Xử lý theo chiều dọc dựa vào vị trí (header/footer)
+  // Xử lý theo chiều dọc dựa vào vị trí (header hay footer_section)
   if (isInFooter) {
-    // Nếu ở footer, luôn hiển thị dropdown hướng lên trên
+    // Nếu ở footer_section, luôn hiển thị dropdown hướng lên trên
     dropdown.style.top = 'auto';
     dropdown.style.bottom = '100%';
   } else {
-    // Nếu ở header hoặc vị trí khác, kiểm tra không gian phía dưới
+    // Nếu không phải ở footer_section, kiểm tra không gian phía dưới
     const spaceBelow = viewportHeight - contentRect.bottom;
     const dropdownHeight = dropdownRect.height;
     
@@ -110,7 +101,7 @@ window.addEventListener('resize', function() {
   visibleDropdowns.forEach(dropdown => {
     const parent = dropdown.closest('.dropdown-location');
     if (parent) {
-      const isInFooter = isElementInFooter(parent);
+      const isInFooter = isElementInFooterSection(parent);
       adjustDropdownPosition(parent, dropdown, isInFooter);
     }
   });
