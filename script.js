@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
     dropdown.addEventListener("mouseenter", function () {
       const dropdownContent = this.querySelector(".dropdown-content-location");
       if (dropdownContent) {
-        // Xác định xem dropdown nằm trong phần tử footer của Elementor hay không
-        const isInFooter = isElementInFooterSection(this);
+        // Xác định xem dropdown nằm trong footer elementor hay không
+        const isInFooter = this.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
         adjustDropdownPosition(this, dropdownContent, isInFooter);
       }
     });
@@ -17,18 +17,12 @@ function isMobile() {
   return window.innerWidth <= 768;
 }
 
-// Hàm kiểm tra xem phần tử có nằm trong footer section của Elementor hay không
-function isElementInFooterSection(element) {
-  // Kiểm tra xem phần tử có nằm trong thẻ có selector cho footer section
-  return element.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
-}
-
 if (isMobile()) {
   document.querySelectorAll('.dropdown-location').forEach(content => {
     const dropdown = content.querySelector('.dropdown-content-location');
     if (dropdown) {
       content.addEventListener('mouseenter', () => {
-        const isInFooter = isElementInFooterSection(content);
+        const isInFooter = content.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
         adjustDropdownPosition(content, dropdown, isInFooter);
       });
     }
@@ -42,7 +36,7 @@ if (isMobile()) {
           document.querySelectorAll('.dropdown-location').forEach(content => {
             const dropdown = content.querySelector('.dropdown-content-location');
             if (dropdown) {
-              const isInFooter = isElementInFooterSection(content);
+              const isInFooter = content.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
               adjustDropdownPosition(content, dropdown, isInFooter);
             }
           });
@@ -73,13 +67,13 @@ function adjustDropdownPosition(content, dropdown, isInFooter) {
   }
   dropdown.style.left = dropdownLeft + 'px';
   
-  // Xử lý theo chiều dọc dựa vào vị trí (header hay footer section)
+  // Xử lý theo chiều dọc dựa vào vị trí
   if (isInFooter) {
-    // Nếu ở footer section, luôn hiển thị dropdown hướng lên trên
+    // Nếu ở footer, luôn hiển thị dropdown hướng lên trên
     dropdown.style.top = 'auto';
     dropdown.style.bottom = '100%';
   } else {
-    // Nếu không phải ở footer section, kiểm tra không gian phía dưới
+    // Nếu không phải ở footer, kiểm tra không gian phía dưới
     const spaceBelow = viewportHeight - contentRect.bottom;
     const dropdownHeight = dropdownRect.height;
     
@@ -101,7 +95,7 @@ window.addEventListener('resize', function() {
   visibleDropdowns.forEach(dropdown => {
     const parent = dropdown.closest('.dropdown-location');
     if (parent) {
-      const isInFooter = isElementInFooterSection(parent);
+      const isInFooter = parent.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
       adjustDropdownPosition(parent, dropdown, isInFooter);
     }
   });
