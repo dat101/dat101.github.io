@@ -53,7 +53,6 @@ function adjustDropdownPosition(content, dropdown, shouldDropUp) {
   
   const contentRect = content.getBoundingClientRect();
   const dropdownRect = dropdown.getBoundingClientRect();
-  const viewportHeight = window.innerHeight;
   const viewportWidth = window.innerWidth;
   
   // Xử lý overflow theo chiều ngang
@@ -69,23 +68,13 @@ function adjustDropdownPosition(content, dropdown, shouldDropUp) {
   
   // Xử lý theo chiều dọc dựa vào vị trí
   if (shouldDropUp) {
-    // Nếu ở trong khu vực cần drop-up, luôn hiển thị dropdown hướng lên trên
+    // Chỉ áp dụng drop-up cho khu vực được chỉ định
     dropdown.style.top = 'auto';
     dropdown.style.bottom = '100%';
   } else {
-    // Nếu không thuộc khu vực drop-up, kiểm tra không gian phía dưới
-    const spaceBelow = viewportHeight - contentRect.bottom;
-    const dropdownHeight = dropdownRect.height;
-    
-    // Nếu không đủ không gian phía dưới, hiển thị lên trên
-    if (spaceBelow < dropdownHeight) {
-      dropdown.style.top = 'auto';
-      dropdown.style.bottom = '100%';
-    } else {
-      // Mặc định: hiển thị phía dưới
-      dropdown.style.top = '';
-      dropdown.style.bottom = '';
-    }
+    // Các khu vực khác giữ nguyên mặc định: hiển thị phía dưới
+    dropdown.style.top = '';
+    dropdown.style.bottom = '';
   }
 }
 
