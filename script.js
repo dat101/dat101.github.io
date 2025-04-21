@@ -5,11 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
     dropdown.addEventListener("mouseenter", function () {
       const dropdownContent = this.querySelector(".dropdown-content-location");
       if (dropdownContent) {
-        // Xác định xem dropdown nằm trong footer elementor hay không
-        const isInFooter = this.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
-        // Thêm kiểm tra cho khu vực cần drop-up
+        // Xác định xem dropdown có nằm trong khu vực cần áp dụng drop-up không
         const shouldDropUp = this.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
-        adjustDropdownPosition(this, dropdownContent, isInFooter, shouldDropUp);
+        adjustDropdownPosition(this, dropdownContent, shouldDropUp);
       }
     });
   });
@@ -24,10 +22,9 @@ if (isMobile()) {
     const dropdown = content.querySelector('.dropdown-content-location');
     if (dropdown) {
       content.addEventListener('mouseenter', () => {
-        const isInFooter = content.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
-        // Thêm kiểm tra cho khu vực cần drop-up
+        // Xác định xem dropdown có nằm trong khu vực cần áp dụng drop-up không
         const shouldDropUp = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
-        adjustDropdownPosition(content, dropdown, isInFooter, shouldDropUp);
+        adjustDropdownPosition(content, dropdown, shouldDropUp);
       });
     }
   });
@@ -40,10 +37,9 @@ if (isMobile()) {
           document.querySelectorAll('.dropdown-location').forEach(content => {
             const dropdown = content.querySelector('.dropdown-content-location');
             if (dropdown) {
-              const isInFooter = content.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
-              // Thêm kiểm tra cho khu vực cần drop-up
+              // Xác định xem dropdown có nằm trong khu vực cần áp dụng drop-up không
               const shouldDropUp = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
-              adjustDropdownPosition(content, dropdown, isInFooter, shouldDropUp);
+              adjustDropdownPosition(content, dropdown, shouldDropUp);
             }
           });
           ticking = false;
@@ -54,7 +50,7 @@ if (isMobile()) {
   });
 }
 
-function adjustDropdownPosition(content, dropdown, isInFooter, shouldDropUp) {
+function adjustDropdownPosition(content, dropdown, shouldDropUp) {
   if (!dropdown) return;
   
   const contentRect = content.getBoundingClientRect();
@@ -78,25 +74,10 @@ function adjustDropdownPosition(content, dropdown, isInFooter, shouldDropUp) {
     // Khu vực được chỉ định luôn hiển thị dropdown hướng lên trên
     dropdown.style.top = 'auto';
     dropdown.style.bottom = '100%';
-  }
-  else if (isInFooter) {
-    // Nếu ở footer, luôn hiển thị dropdown hướng lên trên
-    dropdown.style.top = 'auto';
-    dropdown.style.bottom = '100%';
   } else {
-    // Nếu không phải ở footer, kiểm tra không gian phía dưới
-    const spaceBelow = viewportHeight - contentRect.bottom;
-    const dropdownHeight = dropdownRect.height;
-    
-    // Nếu không đủ không gian phía dưới, hiển thị lên trên
-    if (spaceBelow < dropdownHeight) {
-      dropdown.style.top = 'auto';
-      dropdown.style.bottom = '100%';
-    } else {
-      // Mặc định: hiển thị phía dưới
-      dropdown.style.top = '';
-      dropdown.style.bottom = '';
-    }
+    // Mặc định: hiển thị phía dưới
+    dropdown.style.top = '';
+    dropdown.style.bottom = '';
   }
 }
 
@@ -106,10 +87,9 @@ window.addEventListener('resize', function() {
   visibleDropdowns.forEach(dropdown => {
     const parent = dropdown.closest('.dropdown-location');
     if (parent) {
-      const isInFooter = parent.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
-      // Thêm kiểm tra cho khu vực cần drop-up
+      // Xác định xem dropdown có nằm trong khu vực cần áp dụng drop-up không
       const shouldDropUp = parent.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
-      adjustDropdownPosition(parent, dropdown, isInFooter, shouldDropUp);
+      adjustDropdownPosition(parent, dropdown, shouldDropUp);
     }
   });
 });
