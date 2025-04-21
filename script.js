@@ -54,6 +54,10 @@ function adjustDropdownPosition(content, dropdown, shouldDropUp) {
   const contentRect = content.getBoundingClientRect();
   const dropdownRect = dropdown.getBoundingClientRect();
   const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  
+  // Đặt dropdown ở vị trí fixed
+  dropdown.style.position = 'fixed';
   
   // Xử lý overflow theo chiều ngang
   let dropdownLeft = contentRect.left - 20;
@@ -70,11 +74,11 @@ function adjustDropdownPosition(content, dropdown, shouldDropUp) {
   if (shouldDropUp) {
     // Chỉ áp dụng drop-up cho khu vực được chỉ định
     dropdown.style.top = 'auto';
-    dropdown.style.bottom = '100%';
+    dropdown.style.bottom = (viewportHeight - contentRect.top) + 'px';
   } else {
-    // Các khu vực khác giữ nguyên mặc định: hiển thị phía dưới
-    dropdown.style.top = '';
-    dropdown.style.bottom = '';
+    // Các khu vực khác hiển thị phía dưới
+    dropdown.style.top = contentRect.bottom + 'px';
+    dropdown.style.bottom = 'auto';
   }
 }
 
@@ -89,3 +93,17 @@ window.addEventListener('resize', function() {
     }
   });
 });
+
+// Thêm xử lý sự kiện scroll để cập nhật vị trí của dropdown khi trang được cuộn
+window.addEventListener('scroll', function() {
+  const visibleDropdowns = document.querySelectorAll('.dropdown-content-location:hover, .dropdown-content-location.active');
+  if (visibleDropdowns.length > 0) {
+    visibleDropdowns.forEach(dropdown => {
+      const parent = dropdown.closest('.dropdown-location');
+      if (parent) {
+        const shouldDropUp = parent.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
+        adjustDropdownPosition(parent, dropdown, shouldDropUp);
+      }
+    });
+  }
+}, { passive: true });
