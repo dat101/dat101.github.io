@@ -122,10 +122,9 @@
     }
 
     .dropdown-content-location {    
-      min-width: 150px;
+      width: auto;
       left: 0;
       white-space: normal;
-      max-width: 350px;
       height: auto;
       padding: 3px;
 }
