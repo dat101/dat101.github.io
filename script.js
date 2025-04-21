@@ -54,31 +54,35 @@ function adjustDropdownPosition(content, dropdown, shouldDropUp) {
   const contentRect = content.getBoundingClientRect();
   const dropdownRect = dropdown.getBoundingClientRect();
   const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
   
-  // Đặt dropdown ở vị trí fixed
-  dropdown.style.position = 'fixed';
+  // Đặt position cho dropdown để nó vẫn theo chiều dọc nhưng cố định theo chiều ngang
+  dropdown.style.position = 'absolute';
   
-  // Xử lý overflow theo chiều ngang
-  let dropdownLeft = contentRect.left - 20;
-  if (dropdownLeft + dropdownRect.width > viewportWidth) {
-    dropdownLeft = viewportWidth - dropdownRect.width - 40;
-  }
-  // Ép giá trị left về 0 nếu nhỏ hơn 0
-  if (dropdownLeft < 0) {
-    dropdownLeft = 0;
-  }
-  dropdown.style.left = dropdownLeft + 'px';
+  // Cố định vị trí theo chiều ngang bằng cách thiết lập left: 50% và transform: translateX(-50%)
+  dropdown.style.left = '50%';
+  dropdown.style.transform = 'translateX(-50%)';
   
   // Xử lý theo chiều dọc dựa vào vị trí
   if (shouldDropUp) {
     // Chỉ áp dụng drop-up cho khu vực được chỉ định
     dropdown.style.top = 'auto';
-    dropdown.style.bottom = (viewportHeight - contentRect.top) + 'px';
+    dropdown.style.bottom = '100%';
   } else {
-    // Các khu vực khác hiển thị phía dưới
-    dropdown.style.top = contentRect.bottom + 'px';
+    // Các khu vực khác giữ nguyên mặc định: hiển thị phía dưới
+    dropdown.style.top = '100%';
     dropdown.style.bottom = 'auto';
+  }
+  
+  // Kiểm tra nếu dropdown bị tràn ra ngoài màn hình
+  const updatedRect = dropdown.getBoundingClientRect();
+  if (updatedRect.right > viewportWidth) {
+    // Nếu bị tràn ra ngoài bên phải, điều chỉnh lại
+    const adjustment = updatedRect.right - viewportWidth + 10; // thêm 10px padding
+    dropdown.style.transform = `translateX(calc(-50% - ${adjustment}px))`;
+  } else if (updatedRect.left < 0) {
+    // Nếu bị tràn ra ngoài bên trái, điều chỉnh lại
+    const adjustment = 0 - updatedRect.left + 10; // thêm 10px padding
+    dropdown.style.transform = `translateX(calc(-50% + ${adjustment}px))`;
   }
 }
 
@@ -93,17 +97,3 @@ window.addEventListener('resize', function() {
     }
   });
 });
-
-// Thêm xử lý sự kiện scroll để cập nhật vị trí của dropdown khi trang được cuộn
-window.addEventListener('scroll', function() {
-  const visibleDropdowns = document.querySelectorAll('.dropdown-content-location:hover, .dropdown-content-location.active');
-  if (visibleDropdowns.length > 0) {
-    visibleDropdowns.forEach(dropdown => {
-      const parent = dropdown.closest('.dropdown-location');
-      if (parent) {
-        const shouldDropUp = parent.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
-        adjustDropdownPosition(parent, dropdown, shouldDropUp);
-      }
-    });
-  }
-}, { passive: true });
