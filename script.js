@@ -5,9 +5,11 @@ document.addEventListener("DOMContentLoaded", function () {
     dropdown.addEventListener("mouseenter", function () {
       const dropdownContent = this.querySelector(".dropdown-content-location");
       if (dropdownContent) {
-        // Xác định xem dropdown nằm trong vùng cần áp dụng drop-up hay không
+        // Xác định xem dropdown nằm trong footer elementor hay không
+        const isInFooter = this.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
+        // Thêm kiểm tra cho khu vực cần drop-up
         const shouldDropUp = this.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
-        adjustDropdownPosition(this, dropdownContent, shouldDropUp);
+        adjustDropdownPosition(this, dropdownContent, isInFooter, shouldDropUp);
       }
     });
   });
@@ -22,8 +24,10 @@ if (isMobile()) {
     const dropdown = content.querySelector('.dropdown-content-location');
     if (dropdown) {
       content.addEventListener('mouseenter', () => {
+        const isInFooter = content.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
+        // Thêm kiểm tra cho khu vực cần drop-up
         const shouldDropUp = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
-        adjustDropdownPosition(content, dropdown, shouldDropUp);
+        adjustDropdownPosition(content, dropdown, isInFooter, shouldDropUp);
       });
     }
   });
@@ -36,8 +40,10 @@ if (isMobile()) {
           document.querySelectorAll('.dropdown-location').forEach(content => {
             const dropdown = content.querySelector('.dropdown-content-location');
             if (dropdown) {
+              const isInFooter = content.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
+              // Thêm kiểm tra cho khu vực cần drop-up
               const shouldDropUp = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
-              adjustDropdownPosition(content, dropdown, shouldDropUp);
+              adjustDropdownPosition(content, dropdown, isInFooter, shouldDropUp);
             }
           });
           ticking = false;
@@ -48,11 +54,12 @@ if (isMobile()) {
   });
 }
 
-function adjustDropdownPosition(content, dropdown, shouldDropUp) {
+function adjustDropdownPosition(content, dropdown, isInFooter, shouldDropUp) {
   if (!dropdown) return;
   
   const contentRect = content.getBoundingClientRect();
   const dropdownRect = dropdown.getBoundingClientRect();
+  const viewportHeight = window.innerHeight;
   const viewportWidth = window.innerWidth;
   
   // Xử lý overflow theo chiều ngang
@@ -68,13 +75,28 @@ function adjustDropdownPosition(content, dropdown, shouldDropUp) {
   
   // Xử lý theo chiều dọc dựa vào vị trí
   if (shouldDropUp) {
-    // Chỉ áp dụng drop-up cho khu vực được chỉ định
+    // Khu vực được chỉ định luôn hiển thị dropdown hướng lên trên
+    dropdown.style.top = 'auto';
+    dropdown.style.bottom = '100%';
+  }
+  else if (isInFooter) {
+    // Nếu ở footer, luôn hiển thị dropdown hướng lên trên
     dropdown.style.top = 'auto';
     dropdown.style.bottom = '100%';
   } else {
-    // Các khu vực khác giữ nguyên mặc định: hiển thị phía dưới
-    dropdown.style.top = '';
-    dropdown.style.bottom = '';
+    // Nếu không phải ở footer, kiểm tra không gian phía dưới
+    const spaceBelow = viewportHeight - contentRect.bottom;
+    const dropdownHeight = dropdownRect.height;
+    
+    // Nếu không đủ không gian phía dưới, hiển thị lên trên
+    if (spaceBelow < dropdownHeight) {
+      dropdown.style.top = 'auto';
+      dropdown.style.bottom = '100%';
+    } else {
+      // Mặc định: hiển thị phía dưới
+      dropdown.style.top = '';
+      dropdown.style.bottom = '';
+    }
   }
 }
 
@@ -84,8 +106,10 @@ window.addEventListener('resize', function() {
   visibleDropdowns.forEach(dropdown => {
     const parent = dropdown.closest('.dropdown-location');
     if (parent) {
+      const isInFooter = parent.closest('.elementor-335 .elementor-element.elementor-element-110d384') !== null;
+      // Thêm kiểm tra cho khu vực cần drop-up
       const shouldDropUp = parent.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
-      adjustDropdownPosition(parent, dropdown, shouldDropUp);
+      adjustDropdownPosition(parent, dropdown, isInFooter, shouldDropUp);
     }
   });
 });
