@@ -1,14 +1,13 @@
-
 .outer-container { 
-	text-align: center;
+    text-align: center;
 }
 
-.outer-container p{ 
-	display: none;
+.outer-container p { 
+    display: none;
 }
 
-.outer-container br{ 
-	display: none;
+.outer-container br { 
+    display: none;
 }
 
 .outer-container {
@@ -26,7 +25,7 @@
 
 .dropdown-content-location {
     display: none;
-    position: absolute; /* Đặt cố định thay vì tuyệt đối */
+    position: absolute;
     background-color: white;
     width: auto;
     height: auto;
@@ -76,7 +75,6 @@
 }
 
 .image-caption {
-    color: white;
     font-weight: 500;
     margin-top: 4px;
 }
@@ -93,45 +91,45 @@
 }
 
 .dropdown-content-location::-webkit-scrollbar {
-    width: 8px; /* Độ rộng của scrollbar */
-    height: 8px; /* Độ cao của scrollbar (nếu nằm ngang) */
+    width: 8px;
+    height: 8px;
 }
 
 .dropdown-content-location::-webkit-scrollbar-track {
-    background: #f0f0f0; /* Màu nền của track (đường ray) */
-    border-radius: 10px; /* Bo tròn góc */
+    background: #f0f0f0;
+    border-radius: 10px;
 }
 
 .dropdown-content-location::-webkit-scrollbar-thumb {
-    background: #888; /* Màu của thanh cuộn */
-    border-radius: 10px; /* Bo tròn góc */
-    border: 2px solid #f0f0f0; /* Tạo khoảng cách giữa thumb và track */
+    background: #888;
+    border-radius: 10px;
+    border: 2px solid #f0f0f0;
 }
 
 .dropdown-content-location::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Màu của thanh cuộn khi hover */
+    background: #555;
 }
 
 .dropdown-content-location::-webkit-scrollbar-corner {
-    background: #f0f0f0; /* Màu góc nếu scrollbar nằm trong container vuông */
+    background: #f0f0f0;
 }
 
 @media (max-width: 768px) {
     .dropdown-content-location a {
-       font-size: 17px;
+        font-size: 17px;
     }
 
     .dropdown-content-location {    
-      width: auto;
-      left: 0;
-      white-space: normal;
-      height: auto;
-      padding: 3px;
-}
-	
+        width: auto;
+        left: 0;
+        white-space: normal;
+        height: auto;
+        padding: 3px;
+    }
+
     .dropdown-content-location a img {
-     width: 60px;
-     height: 60px !important;
+        width: 60px;
+        height: 60px !important;
     }
 
     .dropdown-container {
