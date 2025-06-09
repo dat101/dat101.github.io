@@ -117,15 +117,15 @@ document.addEventListener("DOMContentLoaded", function () {
     dropdown.addEventListener("mouseenter", function () {
       const dropdownContent = this.querySelector(".dropdown-content-location");
       if (dropdownContent) {
-        // Xác định xem dropdown nằm trong vùng cần áp dụng drop-up hay không
-        const shouldDropUp = this.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
+        // Xác định xem dropdown nằm trong vùng cần áp dụng kích thước cố định hay không
+        const isInSpecialArea = this.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
         
         // Chỉ áp dụng điều chỉnh vị trí đặc biệt nếu là thiết bị di động
         if (isMobile()) {
-          adjustMobileDropdownPosition(this, dropdownContent, shouldDropUp);
+          adjustMobileDropdownPosition(this, dropdownContent, isInSpecialArea);
         } else {
           // Trên desktop giữ cách hoạt động mặc định
-          adjustDesktopDropdownPosition(this, dropdownContent, shouldDropUp);
+          adjustDesktopDropdownPosition(this, dropdownContent, isInSpecialArea);
         }
       }
     });
@@ -142,8 +142,8 @@ if (isMobile()) {
     const dropdown = content.querySelector('.dropdown-content-location');
     if (dropdown) {
       content.addEventListener('mouseenter', () => {
-        const shouldDropUp = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
-        adjustMobileDropdownPosition(content, dropdown, shouldDropUp);
+        const isInSpecialArea = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
+        adjustMobileDropdownPosition(content, dropdown, isInSpecialArea);
       });
     }
   });
@@ -156,9 +156,9 @@ if (isMobile()) {
           document.querySelectorAll('.dropdown-location').forEach(content => {
             const dropdown = content.querySelector('.dropdown-content-location');
             if (dropdown) {
-              const shouldDropUp = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
+              const isInSpecialArea = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
               if (isMobile()) {
-                adjustMobileDropdownPosition(content, dropdown, shouldDropUp);
+                adjustMobileDropdownPosition(content, dropdown, isInSpecialArea);
               }
             }
           });
@@ -171,46 +171,94 @@ if (isMobile()) {
 }
 
 // Hàm xử lý cho thiết bị desktop - giữ phong cách cơ bản
-function adjustDesktopDropdownPosition(content, dropdown, shouldDropUp) {
+function adjustDesktopDropdownPosition(content, dropdown, isInSpecialArea) {
   if (!dropdown) return;
   
-  // Trên desktop, chỉ xử lý chiều dọc (drop-up) nếu cần
-  if (shouldDropUp) {
-    dropdown.style.top = 'auto';
-    dropdown.style.bottom = '100%';
+  // Chỉ áp dụng kích thước cố định và cuộn nếu trong khu vực đặc biệt
+  if (isInSpecialArea) {
+    dropdown.style.position = 'absolute';
+    dropdown.style.top = '100%';
+    dropdown.style.bottom = 'auto';
+    dropdown.style.maxHeight = '200px'; // Chiều cao cố định
+    dropdown.style.overflowY = 'auto'; // Cho phép cuộn dọc
+    dropdown.style.overflowX = 'hidden'; // Ẩn cuộn ngang
+    dropdown.style.width = 'auto';
+    dropdown.style.minWidth = '200px'; // Chiều rộng tối thiểu
   } else {
+    // Các khu vực khác giữ nguyên mặc định
     dropdown.style.top = '';
     dropdown.style.bottom = '';
+    dropdown.style.maxHeight = '';
+    dropdown.style.overflowY = '';
+    dropdown.style.overflowX = '';
   }
 }
 
 // Hàm xử lý cho thiết bị di động
-function adjustMobileDropdownPosition(content, dropdown, shouldDropUp) {
+function adjustMobileDropdownPosition(content, dropdown, isInSpecialArea) {
   if (!dropdown) return;
   
   const contentRect = content.getBoundingClientRect();
   const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
   
-  // Đặt position cho dropdown để nó vẫn theo chiều dọc
+  // Đặt position cho dropdown
   dropdown.style.position = 'absolute';
+  dropdown.style.top = '100%'; // Luôn hiển thị phía dưới
+  dropdown.style.bottom = 'auto';
   
-  // Bỏ các thiết lập có thể làm thu nhỏ kích thước
-  dropdown.style.maxWidth = 'none';
-  dropdown.style.width = 'auto';
-  
-  // Đảm bảo chiều rộng của dropdown không bị thu nhỏ
-  const dropdownWidth = dropdown.offsetWidth;
-  dropdown.style.width = dropdownWidth + 'px';
-  
-  // Xử lý theo chiều dọc dựa vào vị trí
-  if (shouldDropUp) {
-    // Chỉ áp dụng drop-up cho khu vực được chỉ định
-    dropdown.style.top = 'auto';
-    dropdown.style.bottom = '100%';
+  // Chỉ áp dụng kích thước cố định và cuộn nếu trong khu vực đặc biệt
+  if (isInSpecialArea) {
+    // Thiết lập kích thước cố định và cuộn
+    const maxHeight = Math.min(250, viewportHeight - contentRect.bottom - 20); // Tối đa 250px hoặc khoảng trống còn lại
+    dropdown.style.maxHeight = maxHeight + 'px';
+    dropdown.style.overflowY = 'auto'; // Cho phép cuộn dọc
+    dropdown.style.overflowX = 'hidden'; // Ẩn cuộn ngang
+    
+    // Đảm bảo chiều rộng của dropdown không bị thu nhỏ
+    dropdown.style.width = 'auto';
+    dropdown.style.minWidth = '200px'; // Chiều rộng tối thiểu
+    dropdown.style.maxWidth = 'none';
+    
+    // Thêm style cho scrollbar (tùy chọn)
+    dropdown.style.scrollbarWidth = 'thin'; // Firefox
+    dropdown.style.scrollbarColor = '#888 #f1f1f1'; // Firefox
+    
+    // Webkit scrollbar styling
+    if (!dropdown.classList.contains('custom-scrollbar')) {
+      dropdown.classList.add('custom-scrollbar');
+      
+      // Thêm CSS cho scrollbar nếu chưa có
+      if (!document.getElementById('dropdown-scrollbar-style')) {
+        const style = document.createElement('style');
+        style.id = 'dropdown-scrollbar-style';
+        style.textContent = `
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
   } else {
-    // Các khu vực khác giữ nguyên mặc định: hiển thị phía dưới
-    dropdown.style.top = '100%';
-    dropdown.style.bottom = 'auto';
+    // Các khu vực khác - bỏ các thiết lập có thể làm thu nhỏ kích thước
+    dropdown.style.maxWidth = 'none';
+    dropdown.style.width = 'auto';
+    
+    // Đảm bảo chiều rộng của dropdown không bị thu nhỏ
+    const dropdownWidth = dropdown.offsetWidth;
+    dropdown.style.width = dropdownWidth + 'px';
   }
   
   // Giữ nguyên vị trí theo chiều ngang của dropdown
@@ -247,13 +295,13 @@ window.addEventListener('resize', function() {
   visibleDropdowns.forEach(dropdown => {
     const parent = dropdown.closest('.dropdown-location');
     if (parent) {
-      const shouldDropUp = parent.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
+      const isInSpecialArea = parent.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
       
       // Kiểm tra lại điều kiện mobile sau khi resize
       if (isMobile()) {
-        adjustMobileDropdownPosition(parent, dropdown, shouldDropUp);
+        adjustMobileDropdownPosition(parent, dropdown, isInSpecialArea);
       } else {
-        adjustDesktopDropdownPosition(parent, dropdown, shouldDropUp);
+        adjustDesktopDropdownPosition(parent, dropdown, isInSpecialArea);
       }
     }
   });
