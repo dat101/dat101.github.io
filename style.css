@@ -80,6 +80,10 @@
     margin-top: 4px;
 }
 
+.elementor-widget-container .image-caption { 
+    color: white !important;
+}
+
 .dropdown-content-location a img {
     margin-right: 25px;
     width: 50px;
