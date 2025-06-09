@@ -27,55 +27,57 @@ function getRGBFromString(colorStr) {
     return match ? match.slice(0, 3).map(Number) : [255, 255, 255];
 }
 
-// Hàm chính để cập nhật màu text
+// Hàm tìm màu nền của một element cụ thể
+function getBackgroundColor(element) {
+    let currentEl = element;
+    
+    // Tìm kiếm màu nền từ element hiện tại lên các parent
+    while (currentEl && currentEl !== document.body) {
+        const bgColor = window.getComputedStyle(currentEl).backgroundColor;
+        
+        // Nếu tìm thấy màu nền không trong suốt
+        if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+            return bgColor;
+        }
+        
+        currentEl = currentEl.parentElement;
+    }
+    
+    // Kiểm tra body
+    const bodyBg = window.getComputedStyle(document.body).backgroundColor;
+    if (bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' && bodyBg !== 'transparent') {
+        return bodyBg;
+    }
+    
+    // Default white nếu không tìm thấy
+    return 'rgb(255, 255, 255)';
+}
+
+// Hàm chính để cập nhật màu text cho từng caption
 function updateTextColor() {
     const imageCaptions = document.querySelectorAll('.image-caption');
-    const backgroundElements = [
-        '.woocommerce-page',
-        '.elementor-335 .elementor-element.elementor-element-34d62bad'
-    ];
     
     if (imageCaptions.length === 0) return;
     
-    // Tìm element nền có màu nền
-    let backgroundElement = null;
-    let backgroundColor = null;
-    
-    for (const selector of backgroundElements) {
-        const el = document.querySelector(selector);
-        if (el) {
-            const bgColor = window.getComputedStyle(el).backgroundColor;
-            if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
-                backgroundElement = el;
-                backgroundColor = bgColor;
-                break;
-            }
-        }
-    }
-    
-    // Nếu không tìm thấy màu nền, dùng màu nền của body
-    if (!backgroundColor) {
-        backgroundColor = window.getComputedStyle(document.body).backgroundColor;
-        if (!backgroundColor || backgroundColor === 'rgba(0, 0, 0, 0)' || backgroundColor === 'transparent') {
-            backgroundColor = 'rgb(255, 255, 255)'; // Default white
-        }
-    }
-    
-    // Chuyển đổi màu nền sang RGB
-    const bgRGB = getRGBFromString(backgroundColor);
-    const luminance = getLuminance(bgRGB);
-    
-    // Quyết định màu text: nền sáng -> text tối, nền tối -> text sáng
-    const textColor = luminance > 0.5 ? '#333333' : '#ffffff';
-    
-    // Áp dụng màu cho tất cả .image-caption
+    // Xử lý từng .image-caption riêng biệt
     imageCaptions.forEach(caption => {
+        // Tìm màu nền của khu vực chứa caption này
+        const backgroundColor = getBackgroundColor(caption);
+        
+        // Chuyển đổi màu nền sang RGB
+        const bgRGB = getRGBFromString(backgroundColor);
+        const luminance = getLuminance(bgRGB);
+        
+        // Quyết định màu text: nền sáng -> text tối, nền tối -> text sáng
+        const textColor = luminance > 0.5 ? '#333333' : '#ffffff';
+        
+        // Áp dụng màu cho caption này
         caption.style.color = textColor;
-        // Thêm transition để màu chuyển đổi mượt mà
         caption.style.transition = 'color 0.3s ease';
+        
+        // Debug log cho từng caption
+        console.log(`Caption background: ${backgroundColor}, Text color: ${textColor}`, caption);
     });
-    
-    console.log(`Background: ${backgroundColor}, Text color set to: ${textColor}`);
 }
 
 // Chạy khi DOM ready
@@ -87,22 +89,17 @@ if (document.readyState === 'loading') {
 
 // Theo dõi thay đổi màu nền (dành cho dynamic content)
 const observer = new MutationObserver(() => {
-    updateTextColor();
+    // Debounce để tránh chạy quá nhiều lần
+    clearTimeout(window.colorUpdateTimeout);
+    window.colorUpdateTimeout = setTimeout(updateTextColor, 50);
 });
 
-// Observe changes trong các element có thể ảnh hưởng đến màu nền
-const observeTargets = [
-    document.querySelector('.woocommerce-page'),
-    document.querySelector('.elementor-335'),
-    document.body
-].filter(Boolean);
-
-observeTargets.forEach(target => {
-    observer.observe(target, {
-        attributes: true,
-        attributeFilter: ['style', 'class'],
-        subtree: true
-    });
+// Observe toàn bộ document để bắt mọi thay đổi có thể ảnh hưởng
+observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['style', 'class'],
+    subtree: true,
+    childList: true
 });
 
 // Chạy lại khi window resize (có thể có responsive color changes)
