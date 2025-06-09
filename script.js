@@ -179,7 +179,7 @@ function adjustDesktopDropdownPosition(content, dropdown, isInSpecialArea) {
     dropdown.style.position = 'absolute';
     dropdown.style.top = '100%';
     dropdown.style.bottom = 'auto';
-    dropdown.style.maxHeight = '400px'; // Chiều cao cố định
+    dropdown.style.maxHeight = '300px'; // Chiều cao cố định
     dropdown.style.overflowY = 'auto'; // Cho phép cuộn dọc
     dropdown.style.overflowX = 'hidden'; // Ẩn cuộn ngang
     dropdown.style.width = 'auto';
@@ -210,7 +210,7 @@ function adjustMobileDropdownPosition(content, dropdown, isInSpecialArea) {
   // Chỉ áp dụng kích thước cố định và cuộn nếu trong khu vực đặc biệt
   if (isInSpecialArea) {
     // Thiết lập kích thước cố định và cuộn
-    const maxHeight = Math.min(400, viewportHeight - contentRect.bottom - 20); // Tối đa 400px hoặc khoảng trống còn lại
+    const maxHeight = Math.min(300, viewportHeight - contentRect.bottom - 20); // Tối đa 300px hoặc khoảng trống còn lại
     dropdown.style.maxHeight = maxHeight + 'px';
     dropdown.style.overflowY = 'auto'; // Cho phép cuộn dọc
     dropdown.style.overflowX = 'hidden'; // Ẩn cuộn ngang
