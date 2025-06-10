@@ -120,11 +120,9 @@ document.addEventListener("DOMContentLoaded", function () {
         // Xác định xem dropdown nằm trong vùng cần áp dụng kích thước cố định hay không
         const isInSpecialArea = this.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
         
-        // Chỉ áp dụng điều chỉnh vị trí đặc biệt nếu là thiết bị di động
         if (isMobile()) {
           adjustMobileDropdownPosition(this, dropdownContent, isInSpecialArea);
         } else {
-          // Trên desktop giữ cách hoạt động mặc định
           adjustDesktopDropdownPosition(this, dropdownContent, isInSpecialArea);
         }
       }
@@ -170,27 +168,72 @@ if (isMobile()) {
   });
 }
 
-// Hàm xử lý cho thiết bị desktop - giữ phong cách cơ bản
+// Hàm xử lý cho thiết bị desktop - THÊM logic rút gọn và cuộn
 function adjustDesktopDropdownPosition(content, dropdown, isInSpecialArea) {
   if (!dropdown) return;
   
+  const contentRect = content.getBoundingClientRect();
+  const viewportHeight = window.innerHeight;
+  
+  // Đặt position cho dropdown
+  dropdown.style.position = 'absolute';
+  dropdown.style.top = '100%';
+  dropdown.style.bottom = 'auto';
+  
+  // Tính toán khoảng trống còn lại từ vị trí dropdown đến cuối màn hình
+  const spaceBelow = viewportHeight - contentRect.bottom - 20; // Trừ 20px margin
+  
   // Chỉ áp dụng kích thước cố định và cuộn nếu trong khu vực đặc biệt
   if (isInSpecialArea) {
-    dropdown.style.position = 'absolute';
-    dropdown.style.top = '100%';
-    dropdown.style.bottom = 'auto';
-    dropdown.style.maxHeight = '300px'; // Chiều cao cố định
-    dropdown.style.overflowY = 'auto'; // Cho phép cuộn dọc
-    dropdown.style.overflowX = 'hidden'; // Ẩn cuộn ngang
+    const maxHeight = Math.min(300, spaceBelow);
+    dropdown.style.maxHeight = maxHeight + 'px';
+    dropdown.style.overflowY = 'auto';
+    dropdown.style.overflowX = 'hidden';
     dropdown.style.width = 'auto';
-    dropdown.style.minWidth = '200px'; // Chiều rộng tối thiểu
+    dropdown.style.minWidth = '200px';
   } else {
-    // Các khu vực khác giữ nguyên mặc định
-    dropdown.style.top = '';
-    dropdown.style.bottom = '';
-    dropdown.style.maxHeight = '';
-    dropdown.style.overflowY = '';
-    dropdown.style.overflowX = '';
+    // Các khu vực khác - áp dụng logic rút gọn khi vượt quá màn hình
+    if (spaceBelow < dropdown.scrollHeight) {
+      // Nếu dropdown cao hơn khoảng trống còn lại, rút gọn và thêm cuộn
+      dropdown.style.maxHeight = Math.max(200, spaceBelow) + 'px'; // Tối thiểu 200px
+      dropdown.style.overflowY = 'auto';
+      dropdown.style.overflowX = 'hidden';
+    } else {
+      // Nếu đủ chỗ, hiển thị bình thường
+      dropdown.style.maxHeight = '';
+      dropdown.style.overflowY = '';
+      dropdown.style.overflowX = '';
+    }
+    dropdown.style.width = 'auto';
+    dropdown.style.minWidth = '200px';
+  }
+  
+  // Thêm custom scrollbar cho desktop
+  if (!dropdown.classList.contains('custom-scrollbar')) {
+    dropdown.classList.add('custom-scrollbar');
+    
+    // Thêm CSS cho scrollbar nếu chưa có
+    if (!document.getElementById('dropdown-scrollbar-style')) {
+      const style = document.createElement('style');
+      style.id = 'dropdown-scrollbar-style';
+      style.textContent = `
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
+      `;
+      document.head.appendChild(style);
+    }
   }
 }
 
