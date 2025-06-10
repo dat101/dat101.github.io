@@ -174,11 +174,17 @@ function adjustDesktopDropdownPosition(content, dropdown, isInSpecialArea) {
   
   const contentRect = content.getBoundingClientRect();
   const viewportHeight = window.innerHeight;
+  const viewportWidth = window.innerWidth;
   
   // Đặt position cho dropdown
   dropdown.style.position = 'absolute';
   dropdown.style.top = '100%';
   dropdown.style.bottom = 'auto';
+  
+  // Reset vị trí để tính toán chính xác
+  dropdown.style.left = '0';
+  dropdown.style.right = 'auto';
+  dropdown.style.transform = 'none';
   
   // Tính toán khoảng trống còn lại từ vị trí dropdown đến cuối màn hình
   const spaceBelow = viewportHeight - contentRect.bottom - 20; // Trừ 20px margin
@@ -207,6 +213,36 @@ function adjustDesktopDropdownPosition(content, dropdown, isInSpecialArea) {
     dropdown.style.width = 'auto';
     dropdown.style.minWidth = '200px';
   }
+  
+  // Kiểm tra và điều chỉnh vị trí ngang để tránh bị tràn
+  setTimeout(() => {
+    const dropdownRect = dropdown.getBoundingClientRect();
+    
+    // Nếu dropdown bị tràn ra ngoài bên phải
+    if (dropdownRect.right > viewportWidth - 10) {
+      // Thử căn lề phải
+      dropdown.style.left = 'auto';
+      dropdown.style.right = '0';
+      
+      // Kiểm tra lại sau khi căn phải
+      const newDropdownRect = dropdown.getBoundingClientRect();
+      
+      // Nếu vẫn bị tràn ra ngoài bên trái
+      if (newDropdownRect.left < 10) {
+        // Căn giữa hoặc căn sát lề trái
+        dropdown.style.left = '10px';
+        dropdown.style.right = 'auto';
+        dropdown.style.maxWidth = (viewportWidth - 20) + 'px';
+      }
+    }
+    
+    // Đảm bảo dropdown không vượt quá bên trái màn hình
+    const finalRect = dropdown.getBoundingClientRect();
+    if (finalRect.left < 10) {
+      dropdown.style.left = '10px';
+      dropdown.style.right = 'auto';
+    }
+  }, 0)
   
   // Thêm custom scrollbar cho desktop
   if (!dropdown.classList.contains('custom-scrollbar')) {
@@ -304,11 +340,11 @@ function adjustMobileDropdownPosition(content, dropdown, isInSpecialArea) {
     dropdown.style.width = dropdownWidth + 'px';
   }
   
-  // Giữ nguyên vị trí theo chiều ngang của dropdown
+  // Giữ nguyên vị trí theo chiều ngang của dropdown (logic cũ cho mobile)
   dropdown.style.left = '0';
   dropdown.style.transform = 'none';
   
-  // Kiểm tra nếu dropdown bị tràn ra ngoài màn hình
+  // Kiểm tra nếu dropdown bị tràn ra ngoài màn hình (logic cũ)
   const dropdownRect = dropdown.getBoundingClientRect();
   
   if (dropdownRect.right > viewportWidth) {
