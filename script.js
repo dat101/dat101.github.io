@@ -111,13 +111,15 @@ window.addEventListener('resize', () => {
 window.updateImageCaptionColor = updateTextColor;
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Handle horizontal overflow for all dropdowns
+  // Xử lý overflow chiều ngang cho tất cả các dropdown
   const dropdowns = document.querySelectorAll(".dropdown-location");
   dropdowns.forEach(dropdown => {
     dropdown.addEventListener("mouseenter", function () {
       const dropdownContent = this.querySelector(".dropdown-content-location");
       if (dropdownContent) {
+        // Xác định xem dropdown nằm trong vùng cần áp dụng kích thước cố định hay không
         const isInSpecialArea = this.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
+        
         if (isMobile()) {
           adjustMobileDropdownPosition(this, dropdownContent, isInSpecialArea);
         } else {
@@ -132,26 +134,24 @@ function isMobile() {
   return window.innerWidth <= 768;
 }
 
-// Handle mobile-specific events
+// Thiết lập sự kiện cho thiết bị mobile
 if (isMobile()) {
   document.querySelectorAll('.dropdown-location').forEach(content => {
     const dropdown = content.querySelector('.dropdown-content-location');
     if (dropdown) {
-      content.addEventListener('click', (e) => {
-        e.preventDefault();
+      content.addEventListener('mouseenter', () => {
         const isInSpecialArea = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
         adjustMobileDropdownPosition(content, dropdown, isInSpecialArea);
-        dropdown.classList.toggle('active');
       });
     }
   });
-
+  
   document.querySelectorAll('.scrollable').forEach(scrollable => {
     let ticking = false;
     scrollable.addEventListener('scroll', () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          document.querySelectorAll('.dropdown-location.active').forEach(content => {
+          document.querySelectorAll('.dropdown-location').forEach(content => {
             const dropdown = content.querySelector('.dropdown-content-location');
             if (dropdown) {
               const isInSpecialArea = content.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
@@ -168,26 +168,28 @@ if (isMobile()) {
   });
 }
 
-// Handle desktop dropdown positioning
+// Hàm xử lý cho thiết bị desktop - THÊM logic rút gọn và cuộn
 function adjustDesktopDropdownPosition(content, dropdown, isInSpecialArea) {
   if (!dropdown) return;
-
+  
   const contentRect = content.getBoundingClientRect();
   const viewportHeight = window.innerHeight;
   const viewportWidth = window.innerWidth;
-
-  // Set default position for dropdown
+  
+  // Đặt position cho dropdown
   dropdown.style.position = 'absolute';
   dropdown.style.top = '100%';
   dropdown.style.bottom = 'auto';
+  
+  // Reset vị trí để tính toán chính xác
   dropdown.style.left = '0';
   dropdown.style.right = 'auto';
   dropdown.style.transform = 'none';
-
-  // Calculate available space below
-  const spaceBelow = viewportHeight - contentRect.bottom - 20;
-
-  // Apply fixed size and scrolling for special area
+  
+  // Tính toán khoảng trống còn lại từ vị trí dropdown đến cuối màn hình
+  const spaceBelow = viewportHeight - contentRect.bottom - 20; // Trừ 20px margin
+  
+  // Chỉ áp dụng kích thước cố định và cuộn nếu trong khu vực đặc biệt
   if (isInSpecialArea) {
     const maxHeight = Math.min(300, spaceBelow);
     dropdown.style.maxHeight = maxHeight + 'px';
@@ -196,12 +198,14 @@ function adjustDesktopDropdownPosition(content, dropdown, isInSpecialArea) {
     dropdown.style.width = 'auto';
     dropdown.style.minWidth = '200px';
   } else {
-    // Other areas: adjust height dynamically
+    // Các khu vực khác - áp dụng logic rút gọn khi vượt quá màn hình
     if (spaceBelow < dropdown.scrollHeight) {
-      dropdown.style.maxHeight = Math.max(200, spaceBelow) + 'px';
+      // Nếu dropdown cao hơn khoảng trống còn lại, rút gọn và thêm cuộn
+      dropdown.style.maxHeight = Math.max(200, spaceBelow) + 'px'; // Tối thiểu 200px
       dropdown.style.overflowY = 'auto';
       dropdown.style.overflowX = 'hidden';
     } else {
+      // Nếu đủ chỗ, hiển thị bình thường
       dropdown.style.maxHeight = '';
       dropdown.style.overflowY = '';
       dropdown.style.overflowX = '';
@@ -209,70 +213,145 @@ function adjustDesktopDropdownPosition(content, dropdown, isInSpecialArea) {
     dropdown.style.width = 'auto';
     dropdown.style.minWidth = '200px';
   }
-
-  // Check and adjust horizontal position to prevent right overflow
+  
+  // Kiểm tra và điều chỉnh vị trí ngang để tránh bị tràn
   setTimeout(() => {
     const dropdownRect = dropdown.getBoundingClientRect();
+    
+    // Nếu dropdown bị tràn ra ngoài bên phải
     if (dropdownRect.right > viewportWidth - 10) {
-      // Align left to stay within viewport
-      dropdown.style.left = '0';
-      dropdown.style.right = 'auto';
-      dropdown.style.maxWidth = (viewportWidth - contentRect.left - 10) + 'px';
+      // Thử căn lề phải
+      dropdown.style.left = 'auto';
+      dropdown.style.right = '0';
+      
+      // Kiểm tra lại sau khi căn phải
+      const newDropdownRect = dropdown.getBoundingClientRect();
+      
+      // Nếu vẫn bị tràn ra ngoài bên trái
+      if (newDropdownRect.left < 10) {
+        // Căn giữa hoặc căn sát lề trái
+        dropdown.style.left = '10px';
+        dropdown.style.right = 'auto';
+        dropdown.style.maxWidth = (viewportWidth - 20) + 'px';
+      }
     }
-
-    // Ensure dropdown doesn't overflow left edge
+    
+    // Đảm bảo dropdown không vượt quá bên trái màn hình
     const finalRect = dropdown.getBoundingClientRect();
     if (finalRect.left < 10) {
       dropdown.style.left = '10px';
-      dropdown.style.maxWidth = (viewportWidth - 20) + 'px';
+      dropdown.style.right = 'auto';
     }
-  }, 0);
-
-  // Add custom scrollbar
+  }, 0)
+  
+  // Thêm custom scrollbar cho desktop
   if (!dropdown.classList.contains('custom-scrollbar')) {
     dropdown.classList.add('custom-scrollbar');
+    
+    // Thêm CSS cho scrollbar nếu chưa có
+    if (!document.getElementById('dropdown-scrollbar-style')) {
+      const style = document.createElement('style');
+      style.id = 'dropdown-scrollbar-style';
+      style.textContent = `
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
+      `;
+      document.head.appendChild(style);
+    }
   }
 }
 
-// Handle mobile dropdown positioning (unchanged from original)
+// Hàm xử lý cho thiết bị di động
 function adjustMobileDropdownPosition(content, dropdown, isInSpecialArea) {
   if (!dropdown) return;
-
+  
   const contentRect = content.getBoundingClientRect();
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
-
-  // Set default position
+  
+  // Đặt position cho dropdown
   dropdown.style.position = 'absolute';
-  dropdown.style.top = '100%';
+  dropdown.style.top = '100%'; // Luôn hiển thị phía dưới
   dropdown.style.bottom = 'auto';
-  dropdown.style.left = '0';
-  dropdown.style.right = 'auto';
-  dropdown.style.transform = 'none';
-
-  // Apply fixed size and scrolling for special area
+  
+  // Chỉ áp dụng kích thước cố định và cuộn nếu trong khu vực đặc biệt
   if (isInSpecialArea) {
-    const maxHeight = Math.min(300, viewportHeight - contentRect.bottom - 20);
+    // Thiết lập kích thước cố định và cuộn
+    const maxHeight = Math.min(300, viewportHeight - contentRect.bottom - 20); // Tối đa 300px hoặc khoảng trống còn lại
     dropdown.style.maxHeight = maxHeight + 'px';
-    dropdown.style.overflowY = 'auto';
-    dropdown.style.overflowX = 'hidden';
+    dropdown.style.overflowY = 'auto'; // Cho phép cuộn dọc
+    dropdown.style.overflowX = 'hidden'; // Ẩn cuộn ngang
+    
+    // Đảm bảo chiều rộng của dropdown không bị thu nhỏ
     dropdown.style.width = 'auto';
-    dropdown.style.minWidth = '200px';
+    dropdown.style.minWidth = '200px'; // Chiều rộng tối thiểu
     dropdown.style.maxWidth = 'none';
-    dropdown.style.scrollbarWidth = 'thin';
-    dropdown.style.scrollbarColor = '#888 #f1f1f1';
+    
+    // Thêm style cho scrollbar (tùy chọn)
+    dropdown.style.scrollbarWidth = 'thin'; // Firefox
+    dropdown.style.scrollbarColor = '#888 #f1f1f1'; // Firefox
+    
+    // Webkit scrollbar styling
+    if (!dropdown.classList.contains('custom-scrollbar')) {
+      dropdown.classList.add('custom-scrollbar');
+      
+      // Thêm CSS cho scrollbar nếu chưa có
+      if (!document.getElementById('dropdown-scrollbar-style')) {
+        const style = document.createElement('style');
+        style.id = 'dropdown-scrollbar-style';
+        style.textContent = `
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
   } else {
+    // Các khu vực khác - bỏ các thiết lập có thể làm thu nhỏ kích thước
     dropdown.style.maxWidth = 'none';
     dropdown.style.width = 'auto';
+    
+    // Đảm bảo chiều rộng của dropdown không bị thu nhỏ
     const dropdownWidth = dropdown.offsetWidth;
     dropdown.style.width = dropdownWidth + 'px';
   }
-
-  // Check if dropdown overflows right edge
+  
+  // Giữ nguyên vị trí theo chiều ngang của dropdown (logic cũ cho mobile)
+  dropdown.style.left = '0';
+  dropdown.style.transform = 'none';
+  
+  // Kiểm tra nếu dropdown bị tràn ra ngoài màn hình (logic cũ)
   const dropdownRect = dropdown.getBoundingClientRect();
+  
   if (dropdownRect.right > viewportWidth) {
+    // Nếu bị tràn ra ngoài bên phải, căn lề phải
     const rightEdge = contentRect.right;
     const rightOverflow = dropdownRect.width - rightEdge;
+    
     if (rightOverflow > 0) {
       dropdown.style.left = 'auto';
       dropdown.style.right = '0';
@@ -281,26 +360,23 @@ function adjustMobileDropdownPosition(content, dropdown, isInSpecialArea) {
       dropdown.style.right = 'auto';
     }
   }
-
-  // Ensure dropdown doesn't overflow left edge
+  
+  // Đảm bảo dropdown không vượt quá bên trái màn hình
   if (dropdownRect.left < 0) {
     dropdown.style.left = '0';
     dropdown.style.right = 'auto';
   }
-
-  // Add custom scrollbar
-  if (!dropdown.classList.contains('custom-scrollbar')) {
-    dropdown.classList.add('custom-scrollbar');
-  }
 }
 
-// Add resize event listener
+// Thêm xử lý sự kiện resize để tái tính toán vị trí dropdown khi kích thước màn hình thay đổi
 window.addEventListener('resize', function() {
-  const visibleDropdowns = document.querySelectorAll('.dropdown-content-location.active');
+  const visibleDropdowns = document.querySelectorAll('.dropdown-content-location:hover, .dropdown-content-location.active');
   visibleDropdowns.forEach(dropdown => {
     const parent = dropdown.closest('.dropdown-location');
     if (parent) {
       const isInSpecialArea = parent.closest('.elementor-335 .elementor-element.elementor-element-34d62bad') !== null;
+      
+      // Kiểm tra lại điều kiện mobile sau khi resize
       if (isMobile()) {
         adjustMobileDropdownPosition(parent, dropdown, isInSpecialArea);
       } else {
