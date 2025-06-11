@@ -192,33 +192,6 @@ function adjustDesktopDropdownPosition(content, dropdown, isInSpecialArea) {
     dropdown.style.overflowY = '';
     dropdown.style.overflowX = '';
   }
-  
-  // Kiểm tra và xử lý trường hợp width bị biến dạng dưới 100px (chỉ trên desktop)
-  setTimeout(() => {
-    checkAndFixDropdownWidth(dropdown);
-  }, 10); // Delay nhỏ để đảm bảo CSS đã được áp dụng
-}
-
-// Hàm kiểm tra và sửa width của dropdown nếu bị biến dạng
-function checkAndFixDropdownWidth(dropdown) {
-  if (!dropdown || isMobile()) return;
-  
-  // Lấy width thực tế của dropdown
-  const computedStyle = window.getComputedStyle(dropdown);
-  const actualWidth = dropdown.offsetWidth;
-  
-  // Nếu width dưới 100px, áp dụng right: 0 và left: auto
-  if (actualWidth < 100) {
-    dropdown.style.right = '0';
-    dropdown.style.left = 'auto';
-    
-    // Có thể thêm log để debug (tùy chọn)
-    console.log('Dropdown width fixed:', actualWidth + 'px -> right: 0, left: auto');
-  } else {
-    // Nếu width đủ lớn, đặt lại về mặc định
-    dropdown.style.right = '';
-    dropdown.style.left = '';
-  }
 }
 
 // Hàm xử lý cho thiết bị di động
@@ -329,10 +302,6 @@ window.addEventListener('resize', function() {
         adjustMobileDropdownPosition(parent, dropdown, isInSpecialArea);
       } else {
         adjustDesktopDropdownPosition(parent, dropdown, isInSpecialArea);
-        // Kiểm tra và sửa width sau khi resize
-        setTimeout(() => {
-          checkAndFixDropdownWidth(dropdown);
-        }, 10);
       }
     }
   });
